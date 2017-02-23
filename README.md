@@ -21,5 +21,6 @@ Higher resolution US county shapefiles can be found here: [https://www.census.go
 
 ### Extracting data from a shapefile
 
+![](examples/demoExtractingData.png)
 
 ## SimpleFigures.py

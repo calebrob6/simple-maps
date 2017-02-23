@@ -35,6 +35,15 @@ def getBounds(fn):
 
     return (bounds[1],bounds[3]),(bounds[0],bounds[2])
 
+def getShapefileColumnHeaders(fn):
+    '''Returns all of the column headers from a given shapefile
+    '''
+    f = fiona.open(fn)
+    headers = f[0]["properties"].keys()
+    f.close()
+
+    return headers
+
 def getShapefileColumn(fn, dataHeader, primaryKeyHeader=None):
     '''Takes the filename of a shapefile, the name of the column of data to extract, and optionally the name of the column of data to use as keys.abs
 
@@ -44,10 +53,10 @@ def getShapefileColumn(fn, dataHeader, primaryKeyHeader=None):
     f = fiona.open(fn)
     
     # Check to make sure the column headers are in the file
-    properties = f[0]["properties"].keys()
-    assert dataHeader in properties, "dataHeader %s not in %s" % (dataHeader, properties)
+    headers = f[0]["properties"].keys()
+    assert dataHeader in headers, "dataHeader %s not in %s" % (dataHeader, headers)
     if primaryKeyHeader is not None:
-        assert primaryKeyHeader in properties, "primaryKeyHeader %s not in %s" % (primaryKeyHeader, properties)
+        assert primaryKeyHeader in headers, "primaryKeyHeader %s not in %s" % (primaryKeyHeader, headers)
     
     if primaryKeyHeader is not None:
         data = {}
@@ -109,7 +118,7 @@ def getPolygonPatches(transformer, shapefileFn, shapefileKey, filterList=None):
 
     for i,entry in enumerate(rows):
         geo = entry["geometry"]
-        primaryKey = int(entry["properties"][shapefileKey])
+        primaryKey = entry["properties"][shapefileKey]
 
         if filterList is not None:
             if primaryKey not in filterList:

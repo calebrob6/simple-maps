@@ -20,7 +20,7 @@ def main():
     print 'Starting PolygonPatchesWrapper demo'
     startTime = float(time.time())
 
-    from simplemaps.BasemapUtils import BasemapWrapper,PolygonPatchesWrapper
+    from simplemaps.BasemapUtils import BasemapWrapper,PolygonPatchesWrapper,getShapefileColumn,getShapefileColumnHeaders
 
     CACHE_DIR = "tmpCache/"
 
@@ -62,29 +62,38 @@ def main():
     )
     (xMin,xMax), (yMin, yMax) = bounds
 
-    assert len(patches) == len(keys)
-
-    print "We loaded %d patches from %s" % (len(patches), shapefileFn)
-    print "These patches represent %d different shapes" % (len(set(keys))) 
-
     for patch in patches:
-        patch.set_linewidth(0.5)
+        patch.set_linewidth(0.0)
 
     p = matplotlib.collections.PatchCollection(patches, match_original=True)
 
-    norm = matplotlib.colors.Normalize(vmin=0, vmax=1)
+    # Instead of plotting random numbers, we will plot the land area of each county.
+    
+    # What columns does our shapefile have?
+    print "Column headers:"
+    print getShapefileColumnHeaders(shapefileFn)
+
+    # First we extract the land area data from the shapefile
+    # This gives us a dictionary where "keys" are "GEOID"s and values are "ALAND"s
+    data = getShapefileColumn(shapefileFn, dataHeader="ALAND", primaryKeyHeader=shapefileKey)
+
+    # Find the min and the max of the ALAND values 
+    dataMin = min(data.values())
+    dataMax = max(data.values())
+
+    norm = matplotlib.colors.Normalize(vmin=0, vmax=dataMax)
     cmap = matplotlib.cm.Blues
     scalarMappable = matplotlib.cm.ScalarMappable(norm=norm, cmap=cmap)
 
     faceColorValues = []
-    for i in range(len(keys)):
-        randomColor = np.random.rand()
-        faceColorValues.append(scalarMappable.to_rgba(randomColor))
+    for key in keys:
+        color = scalarMappable.to_rgba(data[key]) # look up the data to plot for this particular key
+        faceColorValues.append(color)
 
     p.set_facecolor(faceColorValues)
     ax.add_collection(p)
 
-    plt.savefig("examples/demoPolygonPatchesWrapper.png",dpi=300,bbox_inches="tight")
+    plt.savefig("examples/demoExtractingData.png",dpi=300,bbox_inches="tight")
     plt.close()
 
     print 'Finished in %0.4f seconds' % (time.time() - startTime)
