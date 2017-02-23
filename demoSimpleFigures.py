@@ -24,15 +24,51 @@ data = getShapefileColumn(shapefileFn, dataHeader="ALAND", primaryKeyHeader=shap
 print "Finished loading data in %0.4f seconds" % (time.time()-loadTime)
 
 #-----------------------------------------------------------------------------------
-loadTime = float(time.time())
+# Normal Plot
 simpleMap(
     shapefileFn,
     shapefileKey,
     data,
-    outputFn="examples/demoSimpleFigure1.png",
-    title="Land Area of Counties in the US",
+    outputFn="examples/demoSimpleFigureNormal.png",
+    title="Land Area of Counties in the US, Normal",
     cacheDir=CACHE_DIR
 )
-print "Finished drawing map1 in %0.4f seconds" % (time.time()-loadTime)
+
+#-----------------------------------------------------------------------------------
+# Different colormap
+simpleMap(
+    shapefileFn,
+    shapefileKey,
+    data,
+    outputFn="examples/demoSimpleFigureDifferentColormap.png",
+    title="Land Area of Counties in the US, Different Colormap",
+    cmap="YlOrRd",
+    cacheDir=CACHE_DIR
+)
+
+#-----------------------------------------------------------------------------------
+# Custom colorbar range
+simpleMap(
+    shapefileFn,
+    shapefileKey,
+    data,
+    outputFn="examples/demoSimpleFigureCustomColorbarRange.png",
+    title="Land Area of Counties in the US, Custom Colorbar Range",
+    customCbar=(None,2.5e10),
+    cacheDir=CACHE_DIR
+)
+
+#-----------------------------------------------------------------------------------
+# Log colorbar with custom range
+simpleMap(
+    shapefileFn,
+    shapefileKey,
+    data,
+    outputFn="examples/demoSimpleFigureLogCustomColorbarRange.png",
+    title="Land Area of Counties in the US, Log Scale with Custom Colorbar Range",
+    customCbar=(4,2.5e10),
+    logScale=True,
+    cacheDir=CACHE_DIR
+)
 
 print 'Finished in %0.4f seconds' % (time.time() - startTime)

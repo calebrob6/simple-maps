@@ -31,7 +31,7 @@ Finally, `BasemapUtils.py` includes serveral accessory functions that make worki
 ### BasemapWrapper example
 
 See `demoBasemapWrapper.py`. This file will take awhile to run the first time, as the full resolution `Basemap` object is cached to disk, however will run quickly every subsequent execution.
-
+(example benchmark times on my machine show an intial runtime of 203 seconds, with subsequent runs taking 8 seconds)
 ![](examples/demoBasemapWrapper.png)
 
 ### PolygonPatchesWrapper example
@@ -52,9 +52,16 @@ To simplify the above steps, we wrap the BasemapWrapper and PolygonPatchesWrappe
 
 ### Basic examples
 
-See `demoBasemapWrapper.py`
+See `demoBasemapWrapper.py`. The following maps demonstrate different arguments to `simpleMap()`.
 
 #### Normal plot
-![](examples/demoSimpleFigure1.png)
+![](examples/demoSimpleFigureNormal.png)
 
+#### Different colormap
+![](examples/demoSimpleFigureDifferentColormap.png)
 
+#### Custom colorbar range
+![](examples/demoSimpleFigureCustomColorbarRange.png)
+
+#### Log colorbar with custom range
+![](examples/demoSimpleFigureLogCustomColorbarRange.png)
