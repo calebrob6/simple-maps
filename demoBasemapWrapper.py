@@ -7,47 +7,40 @@
 # Distributed under terms of the MIT license.
 
 import time
-
 import matplotlib.pyplot as plt
+from simplemaps.BasemapUtils import BasemapWrapper,PolygonPatchesWrapper
 
-#---------------------------------------------------------------------------------------------------
-def main():
-    print 'Starting BasemapWrapper demo'
-    startTime = float(time.time())
+CACHE_DIR = "tmpCache/"
 
-    from simplemaps.BasemapUtils import BasemapWrapper,PolygonPatchesWrapper
+print 'Starting BasemapWrapper demo'
+startTime = float(time.time())
 
-    CACHE_DIR = "tmpCache/"
+fig = plt.figure()
+ax = fig.add_subplot(1, 1, 1, axisbg='#ffffff', frame_on=False)
 
-    fig = plt.figure()
-    ax = fig.add_subplot(1, 1, 1, axisbg='#ffffff', frame_on=False)
+lats = (22, 49) #southern point, northern point
+lons = (-119, -64) #western point, eastern point
 
-    lats = (22, 49) #southern point, northern point
-    lons = (-119, -64) #western point, eastern point
+basemapArgs = {
+    "projection":"lcc", "lat_1":32, "lat_2":45, "lon_0":-95,
+    "llcrnrlat":lats[0],
+    "urcrnrlat":lats[1],
+    "llcrnrlon":lons[0],
+    "urcrnrlon":lons[1],
+    "resolution":"f", #highest resolution data, will take longest to load
+    "fix_aspect":True,
+    "suppress_ticks":True,
+    #-------------------------------
+    "cacheDir":CACHE_DIR,
+    "verbose":True
+}
 
-    basemapArgs = {
-        "projection":"lcc", "lat_1":32, "lat_2":45, "lon_0":-95,
-        "llcrnrlat":lats[0],
-        "urcrnrlat":lats[1],
-        "llcrnrlon":lons[0],
-        "urcrnrlon":lons[1],
-        "resolution":"c", # Increase the resolution here to see the benefit of cached Basemap objects
-        "fix_aspect":True,
-        "suppress_ticks":True,
-        #-------------------------------
-        "cacheDir":CACHE_DIR,
-        "verbose":True
-    }
+m = BasemapWrapper(**basemapArgs)
 
-    m = BasemapWrapper(**basemapArgs)
+m.drawcoastlines()
+m.drawlsmask()
 
-    m.drawcoastlines()
-    m.drawlsmask()
+plt.savefig("examples/demoBasemapWrapper.png",dpi=150,bbox_inches="tight")
+plt.close()
 
-    plt.savefig("examples/demoBasemapWrapper.png",dpi=150,bbox_inches="tight")
-    plt.close()
-
-    print 'Finished in %0.4f seconds' % (time.time() - startTime)
-
-if __name__ == '__main__':
-    main()
+print 'Finished in %0.4f seconds' % (time.time() - startTime)
