@@ -228,7 +228,8 @@ def simpleMap(shapefileFn, shapefileKey, data, cmap="Blues", customCbar=(None,No
         if customCbar[1] is not None:
             dataMax = customCbar[1]
     
-    cbaxes = fig.add_axes([0.2, 0.05, 0.6, 0.05])
+    # Add an axes at position rect [left, bottom, width, height] where all quantities are in fractions of figure width and height. 
+    cbaxes = fig.add_axes([0.2, 0.03, 0.6, 0.05])
     mappable = singleColorbar(cbaxes,dataMin,dataMax,cmapName=cmap,logScale=logScale)
 
     #--------------------------------------------------------------------------------------------------
