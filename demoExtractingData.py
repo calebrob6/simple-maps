@@ -63,7 +63,7 @@ def main():
     (xMin,xMax), (yMin, yMax) = bounds
 
     for patch in patches:
-        patch.set_linewidth(0.0)
+        patch.set_linewidth(0.2)
 
     p = matplotlib.collections.PatchCollection(patches, match_original=True)
 
@@ -81,6 +81,7 @@ def main():
     dataMin = min(data.values())
     dataMax = max(data.values())
 
+    # Setup our color mapping tools
     norm = matplotlib.colors.Normalize(vmin=0, vmax=dataMax)
     cmap = matplotlib.cm.Blues
     scalarMappable = matplotlib.cm.ScalarMappable(norm=norm, cmap=cmap)
