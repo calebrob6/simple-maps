@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt
 
 #---------------------------------------------------------------------------------------------------
 def main():
-    print 'Starting PolygonPatches demo'
+    print 'Starting PolygonPatchesWrapper demo'
     startTime = float(time.time())
 
     from simplemaps.BasemapUtils import BasemapWrapper,PolygonPatchesWrapper
@@ -27,11 +27,11 @@ def main():
     fig = plt.figure()
     ax = fig.add_subplot(1, 1, 1, axisbg='#ffffff', frame_on=False)
 
-    lats = (24.39, 49.38) #southern point, northern point
-    lons = (-124.85, -66.89) #western point, eastern point
+    lats = (22, 49) #southern point, northern point
+    lons = (-119, -64) #western point, eastern point
 
     basemapArgs = {
-        "projection":'merc',
+        "projection":"lcc", "lat_1":32, "lat_2":45, "lon_0":-95,
         "llcrnrlat":lats[0],
         "urcrnrlat":lats[1],
         "llcrnrlon":lons[0],

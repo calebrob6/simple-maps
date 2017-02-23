@@ -233,7 +233,7 @@ if __name__ == "__main__":
     ax = fig.add_subplot(1, 1, 1, axisbg='#ffffff', frame_on=False)
 
     lats = (24.39, 49.38) #southern point, northern point
-    lons = (-124.85, -66.89) #western point, easterm point
+    lons = (-124.85, -66.89) #western point, eastern point
 
     m = BasemapWrapper(
         verbose=True,
