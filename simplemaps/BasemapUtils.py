@@ -24,6 +24,48 @@ KWARGS_IGNORE = ["cacheDir","verbose"]
 
 DEFAULT_CACHE_LOCATION = os.path.join(os.path.expanduser("~"), ".BasemapUtilsCache/")
 
+def getBounds(fn):
+    '''Takes the filename of a shapefile as input, returns the lat/lon bounds in the form:
+
+    (minLatitude,maxLatitude), (minLongitude,maxLongitude)
+    '''
+    f = fiona.open(fn)
+    bounds = f.bounds # In the format (w, s, e, n)
+    f.close()
+
+    return (bounds[1],bounds[3]),(bounds[0],bounds[2])
+
+def getShapefileColumn(fn, dataHeader, primaryKeyHeader=None):
+    '''Takes the filename of a shapefile, the name of the column of data to extract, and optionally the name of the column of data to use as keys.abs
+
+    If primaryKey is None, then this method will return the a list of all the values in the "dataHeader" column.
+    If primaryKey is defined, then this method will return a dict where key=>value pairs are primaryKeyValue=>dataValue for each row.
+    '''
+    f = fiona.open(fn)
+    
+    # Check to make sure the column headers are in the file
+    properties = f[0]["properties"].keys()
+    assert dataHeader in properties, "dataHeader %s not in %s" % (dataHeader, properties)
+    if primaryKeyHeader is not None:
+        assert primaryKeyHeader in properties, "primaryKeyHeader %s not in %s" % (primaryKeyHeader, properties)
+    
+    if primaryKeyHeader is not None:
+        data = {}
+        for row in f:
+            primaryKey = row["properties"][primaryKeyHeader]
+            if primaryKey not in data:
+                data[primaryKey] = row["properties"][dataHeader]
+            else:
+                raise ValueError("Primary key column is not unique (duplicate value found: %r)" % (primaryKey))
+    else:
+        data = []
+        for row in f:
+            data.append(row["properties"][dataHeader])
+    
+    f.close()
+
+    return data
+
 def getBasemapWrapperHash(*args, **kwargs):
     newKwargs = {}
     for k,v in kwargs.items():
@@ -226,6 +268,9 @@ def BasemapWrapper(*args, **kwargs):
 if __name__ == "__main__":
     import matplotlib.pyplot as plt
 
+    getShapefileColumn("examples/cb_2015_us_county_500k/cb_2015_us_county_500k.shp","GEOID")
+
+    '''
     print "Starting test"
     startTime = float(time.time())
 
@@ -254,3 +299,4 @@ if __name__ == "__main__":
     plt.close()
 
     print "Finished in %0.4f seconds" % (time.time()-startTime)
+    '''
