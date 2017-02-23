@@ -90,7 +90,7 @@ for key in keys:
 p.set_facecolor(faceColorValues)
 ax.add_collection(p)
 
-plt.savefig("examples/demoExtractingData.png",dpi=300,bbox_inches="tight")
+plt.savefig("examples/demoExtractingData.png",dpi=150,bbox_inches="tight")
 plt.close()
 
 print 'Finished in %0.4f seconds' % (time.time() - startTime)

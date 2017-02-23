@@ -58,7 +58,8 @@ patches, keys, bounds = PolygonPatchesWrapper(
 )
 (xMin,xMax), (yMin, yMax) = bounds
 
-assert len(patches) == len(keys)
+# for each shape, patches[i], we have the assosciated primary key value, keys[i]
+assert len(patches) == len(keys) # patches will be the same length as keys
 
 print "We loaded %d patches from %s" % (len(patches), shapefileFn)
 print "These patches represent %d different shapes" % (len(set(keys))) 
@@ -80,7 +81,7 @@ for i in range(len(keys)):
 p.set_facecolor(faceColorValues)
 ax.add_collection(p)
 
-plt.savefig("examples/demoPolygonPatchesWrapper.png",dpi=300,bbox_inches="tight")
+plt.savefig("examples/demoPolygonPatchesWrapper.png",dpi=150,bbox_inches="tight")
 plt.close()
 
 print 'Finished in %0.4f seconds' % (time.time() - startTime)
