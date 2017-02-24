@@ -23,6 +23,8 @@ import shapely.ops
 import pandas as pd
 import numpy as np
 
+from pysal.esda.mapclassify import Equal_Interval, Fisher_Jenks, Maximum_Breaks, Natural_Breaks, Quantiles, Percentiles
+
 from BasemapUtils import BasemapWrapper, PolygonPatchesWrapper, getBounds, getShapefileColumn, DEFAULT_CACHE_LOCATION
 
 def getUSMercatorBounds():
@@ -179,6 +181,44 @@ def discreteColorbar(cbaxes,numCategories,cmap,labels=None):
     colorbar.ax.tick_params(labelsize=18,labelcolor='k',direction='inout',width=3,length=6)
 
     return mappable
+
+def binData(data,binningMethod="Equal_Interval",k=5,formatString=None,pct=[1, 10, 50, 90, 99, 100]):
+    '''Wrapper method for pysal mapclassify methods.
+
+    binningMethod can be one of:
+    - Equal_Interval
+    - Fisher_Jenks
+    - Maximum_Breaks
+    - Natural_Breaks
+    - Quantiles
+    - Percentiles
+    '''
+
+    if not isinstance(data,dict):
+        raise ValueError("Data must be a dict")
+    values = np.array(data.values())
+
+    if binningMethod == "Equal_Interval":
+        breaks = Equal_Interval(values, k=k)
+    elif binningMethod == "Fisher_Jenks":
+        breaks = Fisher_Jenks(values, k=k)
+    elif binningMethod == "Maximum_Breaks":
+        breaks = Maximum_Breaks(values, k=k, mindiff=0)
+    elif binningMethod == "Natural_Breaks":
+        breaks = Natural_Breaks(values, k=k, initial=100)
+    elif binningMethod == "Quantiles":
+        breaks = Quantiles(values, k=k)
+    elif binningMethod == "Percentiles":
+        breaks = Percentiles(values, pct=pct)
+    else:
+        raise ValueError("%s is not a binning method")
+    
+    data = {k: breaks.find_bin(v) for k,v in data.items()}
+    if formatString is None:
+        formatString = "%r"
+    labels = [formatString % (label) for label in breaks.bins]
+
+    return data, labels
 
 def simpleBinnedMap(shapefileFn, shapefileKey, data, labels=None, cmap="Blues", size=(20,10), bounds=None, title=None, outputFn=None, cacheDir=None):
 

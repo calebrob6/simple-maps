@@ -8,7 +8,7 @@
 
 import time
 
-from simplemaps.SimpleFigures import simpleMap,simpleBinnedMap
+from simplemaps.SimpleFigures import simpleMap,simpleBinnedMap,binData
 from simplemaps.BasemapUtils import getShapefileColumn
 
 CACHE_DIR = "tmpCache/"
@@ -26,19 +26,31 @@ print "Finished loading data in %0.4f seconds" % (time.time()-loadTime)
 #-----------------------------------------------------------------------------------
 # Binned Plot with Natural Breaks
 
-import pysal.esda.mapclassify
-breaks = pysal.esda.mapclassify.Natural_Breaks(data.values(), k=5)
-labels = breaks.bins
-formattedLabels = ["< %0.2e" % (round(label,-8)) for label in labels]
-categoryData = {k: breaks.find_bin(v) for k,v in data.items()}
+binnedData, binLabels = binData(data, binningMethod="Natural_Breaks", k=5, formatString="< %0.2e")
 
 simpleBinnedMap(
     shapefileFn,
     shapefileKey,
-    categoryData,
-    labels=formattedLabels,
+    binnedData,
+    labels=binLabels,
     outputFn="examples/demoBinnedFigureNaturalBreaks.png",
     title="Land Area of Counties in the US, Categorized with Natural Breaks",
+    cacheDir=CACHE_DIR
+)
+
+#-----------------------------------------------------------------------------------
+# Binned Plot with Natural Breaks
+percentileBreaks = [1, 10, 50, 90, 99, 100]
+binnedData, binLabels = binData(data, binningMethod="Percentiles", k=5, formatString="< %0.2e", pct=percentileBreaks)
+binLabels = ["$%d\%%$" % (percent) for percent in percentileBreaks]
+
+simpleBinnedMap(
+    shapefileFn,
+    shapefileKey,
+    binnedData,
+    labels=binLabels,
+    outputFn="examples/demoBinnedFigurePercentiles.png",
+    title="Land Area of Counties in the US, Categorized with Percentiles",
     cacheDir=CACHE_DIR
 )
 

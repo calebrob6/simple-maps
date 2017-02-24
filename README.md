@@ -75,4 +75,8 @@ See `demoBinnedFigures.py`. The following maps use the `simpleBinnedMap()` metho
 
 #### Binned map with Natural Breaks
 
-![](examples/demoBinnedFigureNaturalBreaks.png) 
+![](examples/demoBinnedFigureNaturalBreaks.png)
+
+#### Binned map with Percentile Breaks
+
+![](examples/demoBinnedFigurePercentileBreaks.png) 
