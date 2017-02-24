@@ -49,7 +49,7 @@ simpleBinnedMap(
     shapefileKey,
     binnedData,
     labels=binLabels,
-    outputFn="examples/demoBinnedFigurePercentiles.png",
+    outputFn="examples/demoBinnedFigurePercentileBreaks.png",
     title="Land Area of Counties in the US, Categorized with Percentiles",
     cacheDir=CACHE_DIR
 )
