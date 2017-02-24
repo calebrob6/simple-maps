@@ -24,10 +24,9 @@ data = getShapefileColumn(shapefileFn, dataHeader="ALAND", primaryKeyHeader=shap
 print "Finished loading data in %0.4f seconds" % (time.time()-loadTime)
 
 #-----------------------------------------------------------------------------------
-# Binned Plot
+# Binned Plot with Natural Breaks
 
 import pysal.esda.mapclassify
-
 breaks = pysal.esda.mapclassify.Natural_Breaks(data.values(), k=5)
 labels = breaks.bins
 formattedLabels = ["< %0.2e" % (round(label,-8)) for label in labels]
@@ -38,8 +37,8 @@ simpleBinnedMap(
     shapefileKey,
     categoryData,
     labels=formattedLabels,
-    outputFn="examples/demoBinnedFigure.png",
-    title="Land Area of Counties in the US, Categorized",
+    outputFn="examples/demoBinnedFigureNaturalBreaks.png",
+    title="Land Area of Counties in the US, Categorized with Natural Breaks",
     cacheDir=CACHE_DIR
 )
 

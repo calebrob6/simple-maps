@@ -67,3 +67,12 @@ See `demoBasemapWrapper.py`. The following maps demonstrate different arguments 
 
 #### Log colorbar with custom range
 ![](examples/demoSimpleFigureLogCustomColorbarRange.png)
+
+
+### Binned examples
+
+See `demoBinnedFigures.py`. The following maps use the `simpleBinnedMap()` method.
+
+#### Binned map with Natural Breaks
+
+![](examples/demoBinnedFigureNaturalBreaks.png) 
