@@ -79,4 +79,17 @@ See `demoBinnedFigures.py`. The following maps use the `simpleBinnedMap()` metho
 
 #### Binned map with Percentile Breaks
 
-![](examples/demoBinnedFigurePercentileBreaks.png) 
+![](examples/demoBinnedFigurePercentileBreaks.png)
+
+
+### Difference examples
+
+See `demoDifferenceFigures.py`. The following maps use the `differenceMap()` method.
+
+#### Population Growth
+
+This map uses the 2013 and 2014 American Community Survey 5 year population estimates extracted from the TIGER geodatabases: see [https://www.census.gov/geo/maps-data/data/tiger-data.html](https://www.census.gov/geo/maps-data/data/tiger-data.html).
+
+We map the log of the 2014 population minus the 2013 population, and start the colorbars at $100$ to filter out smaller changes.
+
+![](examples/demoDifferenceFigure.png)

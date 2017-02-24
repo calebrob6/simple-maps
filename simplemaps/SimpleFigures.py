@@ -220,7 +220,7 @@ def binData(data,binningMethod="Equal_Interval",k=5,formatString=None,pct=[1, 10
 
     return data, labels
 
-def simpleBinnedMap(shapefileFn, shapefileKey, data, labels=None, cmap="Blues", size=(20,10), bounds=None, title=None, outputFn=None, cacheDir=None):
+def simpleBinnedMap(shapefileFn, shapefileKey, data, labels=None, cmap="Blues", size=(20,10), bounds=None, title=None, outputFn=None, cacheDir=None, verbose=False):
 
     numberUniqueValues = len(set(data.values()))
     if not isinstance(cmap,str):
@@ -241,7 +241,18 @@ def simpleBinnedMap(shapefileFn, shapefileKey, data, labels=None, cmap="Blues", 
         cacheDir=cacheDir
     )
 
-def simpleMap(shapefileFn, shapefileKey, data, cmap="Blues", colorbarRange=(None,None), colorbarType=0, colorbarLabels=None, size=(20,10), logScale=False, bounds=None, title=None, outputFn=None, cacheDir=None):
+def simpleMap(
+        shapefileFn, shapefileKey,
+        data,
+        cmap="Blues", colorbarRange=(None,None), colorbarType=0, colorbarLabels=None,
+        size=(20,10),
+        logScale=False,
+        bounds=None,
+        title=None,
+        outputFn=None,
+        cacheDir=None,
+        verbose=False
+    ):
     '''
 
     Inputs:
@@ -280,7 +291,7 @@ def simpleMap(shapefileFn, shapefileKey, data, cmap="Blues", colorbarRange=(None
         "suppress_ticks":True,
         #-------------------------------
         "cacheDir":cacheDir,
-        "verbose":True
+        "verbose":verbose
     }
 
     m = BasemapWrapper(**basemapArgs)
@@ -294,7 +305,7 @@ def simpleMap(shapefileFn, shapefileKey, data, cmap="Blues", colorbarRange=(None
         filterList=None,
         basemapArgs=basemapArgs,
         cacheDir=cacheDir, 
-        verbose=True
+        verbose=verbose
     )
 
     for patch in patches:
@@ -347,6 +358,7 @@ def simpleMap(shapefileFn, shapefileKey, data, cmap="Blues", colorbarRange=(None
         mappable = discreteColorbar(cbaxes,numCategories,cmap,labels=colorbarLabels)
     else:
         raise ValueError("colorbarType has to be either 1 or 2")
+    
     #--------------------------------------------------------------------------------------------------
     # Apply the colors
     #--------------------------------------------------------------------------------------------------   
@@ -388,6 +400,212 @@ def simpleMap(shapefileFn, shapefileKey, data, cmap="Blues", colorbarRange=(None
     
     if outputFn is not None:
         plt.savefig(outputFn, dpi=150, alpha=True, bbox_inches='tight')
+    else:
+        plt.show()
+    
+    plt.close()
+
+
+def differenceMap(
+        shapefileFn, shapefileKey,
+        data,
+        colorbarRange=(None,None),
+        size=(20,10),
+        logScale=False,
+        bounds=None,
+        title=None,
+        outputFn=None,
+        cacheDir=None,
+        verbose=False
+    ):
+
+    
+    if cacheDir is None:
+        cacheDir = DEFAULT_CACHE_LOCATION
+
+    #--------------------------------------------------------------------------------------------------
+    # Setup Figure
+    #--------------------------------------------------------------------------------------------------
+    fig = plt.figure()
+    ax = fig.add_subplot(1, 1, 1, axisbg='#ffffff', frame_on=False)
+
+    lats, lons = None, None
+    if bounds is None:
+        lats, lons = getBounds(shapefileFn)
+    else:
+        lats = (bounds[0],bounds[1])
+        lons = (bounds[2],bounds[3])
+
+    basemapArgs = {
+        "projection":"merc",
+        "llcrnrlat":lats[0],
+        "urcrnrlat":lats[1],
+        "llcrnrlon":lons[0],
+        "urcrnrlon":lons[1],
+        "resolution":"i",
+        "fix_aspect":True,
+        "suppress_ticks":True,
+        #-------------------------------
+        "cacheDir":cacheDir,
+        "verbose":verbose
+    }
+
+    m = BasemapWrapper(**basemapArgs)
+
+    #--------------------------------------------------------------------------------------------------
+    # Load polygons with cache aware technique
+    #--------------------------------------------------------------------------------------------------
+    patches, keys, bounds = PolygonPatchesWrapper(
+        m,
+        shapefileFn, shapefileKey,
+        filterList=None,
+        basemapArgs=basemapArgs,
+        cacheDir=cacheDir, 
+        verbose=verbose
+    )
+
+    for patch in patches:
+        patch.set_linewidth(0.5)
+
+    p = matplotlib.collections.PatchCollection(patches, match_original=True)
+    
+
+    #--------------------------------------------------------------------------------------------------
+    # Setup Colorbar
+    #--------------------------------------------------------------------------------------------------
+    if colorbarRange[0] is None:
+        dataMin = min(data.values())
+    else:
+        dataMin = colorbarRange[0]
+
+    if colorbarRange[1] is None:
+        dataMax = max(data.values())
+    else:
+        dataMax = colorbarRange[1]
+
+    
+    #----------------------------
+    # Show difference map, i.e. two color bars
+    #----------------------------
+    
+    #----------------------------
+    # Log scale, two color bars
+    #----------------------------
+    if logScale:
+        pTicks,pTicklabels = getLogTickLabels(dataMin, dataMax, positive=True)
+        nTicks,nTicklabels = getLogTickLabels(dataMin, dataMax, positive=False)
+
+        positiveNorm = matplotlib.colors.SymLogNorm(1.0, linscale=1.0, vmin=pTicks[0], vmax=pTicks[-1])
+        positiveNorm._transform_vmin_vmax()
+        positiveCmap = matplotlib.cm.Reds
+
+        negativeNorm = matplotlib.colors.SymLogNorm(1.0, linscale=1.0, vmin=-pTicks[-1], vmax=-pTicks[0])
+        negativeNorm._transform_vmin_vmax()
+        negativeCmap = matplotlib.cm.Blues_r
+
+        positiveMappable = matplotlib.cm.ScalarMappable(norm=positiveNorm, cmap=positiveCmap)
+        negativeMappable = matplotlib.cm.ScalarMappable(norm=negativeNorm, cmap=negativeCmap)
+    #----------------------------
+    # Linear scale, two color bars
+    #----------------------------  
+    else:
+        pTicks,pTicklabels = getLinearTickLabels(dataMin, dataMax, positive=True)
+        nTicks,nTicklabels = getLinearTickLabels(dataMin, dataMax, positive=False)
+
+        positiveNorm = matplotlib.colors.Normalize(vmin=pTicks[0], vmax=pTicks[-1])
+        positiveCmap = matplotlib.cm.Reds
+
+        negativeNorm = matplotlib.colors.Normalize(vmin=-pTicks[-1], vmax=-pTicks[0])
+        negativeCmap = matplotlib.cm.Blues_r
+
+        positiveMappable = matplotlib.cm.ScalarMappable(norm=positiveNorm, cmap=positiveCmap)
+        negativeMappable = matplotlib.cm.ScalarMappable(norm=negativeNorm, cmap=negativeCmap)
+
+    #----------------------------
+    # Draw right (positive) colorbar
+    #----------------------------
+    gapVal = 0.02 # this determines how much space is between the two colorbars (in terms of percentage of width of the figure, 0.02 is a 2% gap)
+    
+    cbaxes = fig.add_axes([0.5+gapVal, 0.03, 0.3, 0.05], frameon=False)
+    colorbar = matplotlib.colorbar.ColorbarBase(
+        cbaxes,
+        cmap=positiveCmap,
+        norm=positiveNorm,
+        orientation='horizontal'
+    )
+    colorbar.outline.set_visible(True)
+    colorbar.outline.set_linewidth(0.5)
+
+    colorbar.set_ticks(pTicks)
+    colorbar.set_ticklabels(pTicklabels)
+    colorbar.ax.tick_params(labelsize=28,labelcolor='k',direction='inout',width=3,length=6)
+
+    #----------------------------
+    # Draw left (negative) colorbar
+    #----------------------------
+    cbaxes = fig.add_axes([0.2, 0.03, 0.3-gapVal, 0.05], frameon=False)
+    colorbar = matplotlib.colorbar.ColorbarBase(
+        cbaxes,
+        cmap=negativeCmap,
+        norm=negativeNorm,
+        orientation='horizontal'
+    )
+    colorbar.outline.set_visible(True)
+    colorbar.outline.set_linewidth(0.5)
+
+    colorbar.set_ticks(nTicks)
+    colorbar.set_ticklabels(nTicklabels)
+    colorbar.ax.tick_params(labelsize=28,labelcolor='k',direction='inout',width=3,length=6)
+
+    #----------------------------
+    # Use whichever mappable we loaded from above to color the patches
+    #----------------------------
+    faceColorValues = []
+    for key in keys:
+        dataVal = data[key]
+        if dataVal>=pTicks[0]:
+            faceColorValues.append(positiveMappable.to_rgba(dataVal))
+        elif dataVal<=-pTicks[0]:
+            faceColorValues.append(negativeMappable.to_rgba(dataVal))
+        else:
+            faceColorValues.append("#FFFFFF")
+
+    #----------------------------
+    # Apply the colors
+    #----------------------------   
+    p.set_facecolor(faceColorValues)
+    ax.add_collection(p)
+
+    #--------------------------------------------------------------------------------------------------
+    # Misc Options
+    #--------------------------------------------------------------------------------------------------
+    padding = 2
+    (xMin,xMax), (yMin, yMax) = bounds
+    ax.set_xlim([xMin-padding,xMax+padding])
+    ax.set_ylim([yMin-padding,yMax+padding])
+
+    ax.tick_params(axis='both', which='both', labelsize=20)
+    ax.tick_params(
+        bottom=False, top=False, left=False, right=False, 
+        labelbottom=False, labeltop=False, labelleft=False, labelright=False
+    )
+    ax.grid(b=False)
+
+    m.drawmapboundary(
+        color='k',
+        linewidth=0.0,
+        fill_color='#ffffff',
+        zorder=None,
+        ax=ax
+    )
+
+    if title is not None:
+        ax.set_title(title,fontsize=26,color='k')
+    
+    fig.set_size_inches(size[0],size[1])
+    
+    if outputFn is not None:
+        plt.savefig(outputFn, dpi=300, alpha=True, bbox_inches='tight')
     else:
         plt.show()
     
