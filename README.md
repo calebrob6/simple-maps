@@ -30,19 +30,21 @@ Finally, `BasemapUtils.py` includes serveral accessory functions that make worki
 
 ### BasemapWrapper example
 
-See `demoBasemapWrapper.py`. This file will take awhile to run the first time, as the full resolution `Basemap` object is cached to disk, however will run quickly every subsequent execution.
+See `demoBasemapWrapper.py`. This script will take longer to run the first time, as the full resolution `Basemap` object is cached to disk. It will run quickly in subsequent executions as reading the cached object from disk is much faster than recalculating it.
+
 (example benchmark times on my machine show an intial runtime of 203 seconds, with subsequent runs taking 8 seconds)
+
 ![](examples/demoBasemapWrapper.png)
 
 ### PolygonPatchesWrapper example
 
-See `demoPolygonPatchesWrapper.py`. Demonstrates how the `PolygonPatchesWrapper` method can be used to map data (random numbers). 
+See `demoPolygonPatchesWrapper.py`. This script demonstrates how the `PolygonPatchesWrapper` method can be used to map data (random numbers). 
 
 ![](examples/demoPolygonPatchesWrapper.png)
 
 ### Extracting and mapping data from a shapefile example
 
-See `demoExtractingData.py`. Demonstrates how the `PolygonPatchesWrapper` and `getShapefileColumn` methods can be used to create an actual map.
+See `demoExtractingData.py`. This script demonstrates how the `PolygonPatchesWrapper` and `getShapefileColumn` methods can be used to create an actual map.
 
 ![](examples/demoExtractingData.png)
 
