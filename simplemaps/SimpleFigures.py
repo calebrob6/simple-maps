@@ -65,6 +65,7 @@ def showCmap(cmap):
 def discretizeCmap(n, base="Reds"):
     '''Creates a cmap with n colors sampled from the given base cmap
     '''
+
     cmap = matplotlib.cm.get_cmap(base, n)
     cmaplist = [cmap(i) for i in range(cmap.N)]
 
@@ -116,7 +117,7 @@ def getLinearTickLabels(minVal, maxVal, positive=True, numTicks=5):
 
     return ticks,tickLabels
 
-def singleColorbar(cbaxes,dataMin,dataMax,cmapName,logScale=False):
+def singleColorbar(cbaxes,dataMin,dataMax,cmap,logScale=False):
     tTicks,tTicklabels = None, None
 
     #----------------------------
@@ -133,7 +134,6 @@ def singleColorbar(cbaxes,dataMin,dataMax,cmapName,logScale=False):
         tTicks,tTicklabels = getLinearTickLabels(dataMin, dataMax, positive=True)
         norm = matplotlib.colors.Normalize(vmin=dataMin, vmax=dataMax)
 
-    cmap = matplotlib.cm.get_cmap(cmapName)
     mappable = matplotlib.cm.ScalarMappable(norm=norm, cmap=cmap)
     
     #----------------------------
@@ -155,7 +155,53 @@ def singleColorbar(cbaxes,dataMin,dataMax,cmapName,logScale=False):
 
     return mappable
 
-def simpleMap(shapefileFn, shapefileKey, data, cmap="Blues", customCbar=(None,None), size=(20,10), logScale=False, bounds=None, title=None, outputFn=None, cacheDir=None):
+def discreteColorbar(cbaxes,numCategories,cmap,labels=None):
+
+    if labels is not None:
+        assert numCategories == len(labels)
+
+    norm = matplotlib.colors.Normalize(vmin=0, vmax=numCategories)
+    mappable = matplotlib.cm.ScalarMappable(norm=norm, cmap=cmap)
+    
+    colorbar = matplotlib.colorbar.ColorbarBase(
+        cbaxes,
+        cmap=cmap,
+        norm=norm,
+        orientation='horizontal'
+    )
+    
+    colorbar.outline.set_visible(True)
+    colorbar.outline.set_linewidth(0.5)
+        
+    colorbar.set_ticks(np.arange(0,numCategories) + 0.5)
+    if labels is not None:
+        colorbar.set_ticklabels(labels)
+    colorbar.ax.tick_params(labelsize=18,labelcolor='k',direction='inout',width=3,length=6)
+
+    return mappable
+
+def simpleBinnedMap(shapefileFn, shapefileKey, data, labels=None, cmap="Blues", size=(20,10), bounds=None, title=None, outputFn=None, cacheDir=None):
+
+    numberUniqueValues = len(set(data.values()))
+    if not isinstance(cmap,str):
+        raise ValueError("cmap must be a string of one of the matplotlib colormaps")
+    
+    discretizedCmap = discretizeCmap(numberUniqueValues, cmap)
+
+    simpleMap(
+        shapefileFn, shapefileKey,
+        data,
+        cmap=discretizedCmap,
+        colorbarType=1,
+        colorbarLabels=labels,
+        size=size, 
+        bounds=bounds,
+        title=title,
+        outputFn=outputFn,
+        cacheDir=cacheDir
+    )
+
+def simpleMap(shapefileFn, shapefileKey, data, cmap="Blues", colorbarRange=(None,None), colorbarType=0, colorbarLabels=None, size=(20,10), logScale=False, bounds=None, title=None, outputFn=None, cacheDir=None):
     '''
 
     Inputs:
@@ -219,19 +265,48 @@ def simpleMap(shapefileFn, shapefileKey, data, cmap="Blues", customCbar=(None,No
     #--------------------------------------------------------------------------------------------------
     # Deal with the colorbar
     #--------------------------------------------------------------------------------------------------
-    dataMin = min(data.values())
-    dataMax = max(data.values())
-    if customCbar is not None:
-        if customCbar[0] is not None:
-            dataMin = customCbar[0]
+    if colorbarType==0:
+        #----------------------------------------------------------------
+        # Single colorbar
+        #----------------------------------------------------------------
 
-        if customCbar[1] is not None:
-            dataMax = customCbar[1]
-    
-    # Add an axes at position rect [left, bottom, width, height] where all quantities are in fractions of figure width and height. 
-    cbaxes = fig.add_axes([0.2, 0.03, 0.6, 0.05])
-    mappable = singleColorbar(cbaxes,dataMin,dataMax,cmapName=cmap,logScale=logScale)
+        dataMin = min(data.values())
+        dataMax = max(data.values())
+        if colorbarRange is not None:
+            if colorbarRange[0] is not None:
+                dataMin = colorbarRange[0]
 
+            if colorbarRange[1] is not None:
+                dataMax = colorbarRange[1]
+        
+        # Add an axes at position rect [left, bottom, width, height] where all quantities are in fractions of figure width and height. 
+        cbaxes = fig.add_axes([0.2, 0.03, 0.6, 0.05])
+
+        if isinstance(cmap, str):
+            cmap = matplotlib.cm.get_cmap(cmap)
+
+        mappable = singleColorbar(cbaxes, dataMin, dataMax, cmap=cmap, logScale=logScale)
+
+    elif colorbarType==1: #Discrete colorbar
+        #----------------------------------------------------------------
+        # Discrete colorbar
+        #----------------------------------------------------------------
+
+        # Add an axes at position rect [left, bottom, width, height] where all quantities are in fractions of figure width and height. 
+        cbaxes = fig.add_axes([0.2, 0.03, 0.6, 0.05])
+
+        #transform data into category format
+        uniqueDataValues = sorted(list(set(data.values())))
+        uniqueDataValuesMap = {val:i for i,val in enumerate(uniqueDataValues)}
+        numCategories = len(uniqueDataValues)
+        data = {k: uniqueDataValuesMap[v] for k,v in data.items()}
+
+        if isinstance(cmap, str):
+            raise ValueError("Must pass in an actual cmap object when using a discrete colormap (colorbarType==1)")
+
+        mappable = discreteColorbar(cbaxes,numCategories,cmap,labels=colorbarLabels)
+    else:
+        raise ValueError("colorbarType has to be either 1 or 2")
     #--------------------------------------------------------------------------------------------------
     # Apply the colors
     #--------------------------------------------------------------------------------------------------   
@@ -291,4 +366,8 @@ if __name__ == "__main__":
     simpleMap(shapefileFn, shapefileKey, data, outputFn="test.png", title="Land Area of Counties in the US", logScale=False)
     print "Finished drawing map in %0.4f seconds" % (time.time()-startTime)
 
+    startTime = float(time.time())
+    categoryData = {k: np.random.randint(0,5) for k,v in data.items()}
+    simpleBinnedMap(shapefileFn, shapefileKey, categoryData, labels=["1","2","3","4","5"], outputFn="testCategories.png")
+    print "Finished drawing map in %0.4f seconds" % (time.time()-startTime)
     
