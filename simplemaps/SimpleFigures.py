@@ -244,7 +244,7 @@ def simpleBinnedMap(shapefileFn, shapefileKey, data, labels=None, cmap="Blues", 
 def simpleMap(
         shapefileFn, shapefileKey,
         data,
-        cmap="Blues", colorbarRange=(None,None), colorbarType=0, colorbarLabels=None,
+        cmap="Blues", colorbarRange=(None,None), colorbarType=0, colorbarLabels=None, noDataColor="#FFFFFF",
         size=(20,10),
         logScale=False,
         bounds=None,
@@ -364,9 +364,12 @@ def simpleMap(
     #--------------------------------------------------------------------------------------------------   
     faceColorValues = []
     for key in keys:
-        color = mappable.to_rgba(data[key])
-        faceColorValues.append(color)
-    
+        if key in data:
+            color = mappable.to_rgba(data[key])
+            faceColorValues.append(color)
+        else:
+            faceColorValues.append(noDataColor)
+
     p.set_facecolor(faceColorValues)
     ax.add_collection(p)
 
