@@ -565,11 +565,12 @@ def differenceMap(
     #----------------------------
     faceColorValues = []
     for key in keys:
-        dataVal = data[key]
-        if dataVal>=pTicks[0]:
-            faceColorValues.append(positiveMappable.to_rgba(dataVal))
-        elif dataVal<=-pTicks[0]:
-            faceColorValues.append(negativeMappable.to_rgba(dataVal))
+        if key in data:
+            dataVal = data[key]
+            if dataVal>=pTicks[0]:
+                faceColorValues.append(positiveMappable.to_rgba(dataVal))
+            elif dataVal<=-pTicks[0]:
+                faceColorValues.append(negativeMappable.to_rgba(dataVal))
         else:
             faceColorValues.append("#FFFFFF")
 
