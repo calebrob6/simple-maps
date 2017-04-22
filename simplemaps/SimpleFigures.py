@@ -571,6 +571,8 @@ def differenceMap(
                 faceColorValues.append(positiveMappable.to_rgba(dataVal))
             elif dataVal<=-pTicks[0]:
                 faceColorValues.append(negativeMappable.to_rgba(dataVal))
+            else:
+                faceColorValues.append("#FFFFFF")
         else:
             faceColorValues.append("#FFFFFF")
 
