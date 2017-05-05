@@ -182,7 +182,13 @@ def discreteColorbar(cbaxes,numCategories,cmap,labels=None):
 
     return mappable
 
-def binData(data,binningMethod="Equal_Interval",k=5,formatString=None,pct=[1, 10, 50, 90, 99, 100]):
+def applyBinBreaks(data, breaks):
+    '''Apply the breaks determined by `binData` to a set of data.'''
+    
+    data = {k: breaks.find_bin(v) for k,v in data.items()}
+    return data
+
+def binData(data,binningMethod="Equal_Interval",k=5,formatString=None,pct=[1, 10, 50, 90, 99, 100], returnBreaks=False):
     '''Wrapper method for pysal mapclassify methods.
 
     binningMethod can be one of:
@@ -217,8 +223,11 @@ def binData(data,binningMethod="Equal_Interval",k=5,formatString=None,pct=[1, 10
     if formatString is None:
         formatString = "%r"
     labels = [formatString % (label) for label in breaks.bins]
-
-    return data, labels
+    
+    if returnBreaks:
+        return data, labels, breaks
+    else:
+        return data, labels
 
 def simpleBinnedMap(shapefileFn, shapefileKey, data, labels=None, cmap="Blues", size=(20,10), bounds=None, title=None, outputFn=None, cacheDir=None, verbose=False):
 
