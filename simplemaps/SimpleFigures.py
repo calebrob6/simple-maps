@@ -280,7 +280,7 @@ def simpleMap(
     # Setup Figure
     #--------------------------------------------------------------------------------------------------
     fig = plt.figure()
-    ax = fig.add_subplot(1, 1, 1, axisbg='#ffffff', frame_on=False)
+    ax = fig.add_subplot(1, 1, 1, facecolor='#ffffff', frame_on=False)
 
     lats, lons = None, None
     if bounds is None:
@@ -319,6 +319,7 @@ def simpleMap(
 
     for patch in patches:
         patch.set_linewidth(0.5)
+        patch.set_edgecolor("black")
 
     p = matplotlib.collections.PatchCollection(patches, match_original=True)
 
@@ -439,7 +440,7 @@ def differenceMap(
     # Setup Figure
     #--------------------------------------------------------------------------------------------------
     fig = plt.figure()
-    ax = fig.add_subplot(1, 1, 1, axisbg='#ffffff', frame_on=False)
+    ax = fig.add_subplot(1, 1, 1, facecolor='#ffffff', frame_on=False)
 
     lats, lons = None, None
     if bounds is None:
@@ -478,6 +479,7 @@ def differenceMap(
 
     for patch in patches:
         patch.set_linewidth(0.5)
+        patch.set_edgecolor("black")
 
     p = matplotlib.collections.PatchCollection(patches, match_original=True)
     

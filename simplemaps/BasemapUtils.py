@@ -160,7 +160,7 @@ def getPolygonPatches(transformer, shapefileFn, shapefileKey, filterList=None):
         yMax = max(yMax, tYmax)
         yMin = min(yMin, tYmin)
 
-        polygon = matplotlib.patches.Polygon(np.array([x,y]).T, closed=True, facecolor='grey', zorder=0, alpha=1)
+        polygon = matplotlib.patches.Polygon(np.array([x,y]).T, closed=True, facecolor='grey', zorder=0, alpha=1, linewidth=1)
         
         patches.append(polygon)
 
