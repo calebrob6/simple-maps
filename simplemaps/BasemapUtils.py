@@ -7,7 +7,7 @@
 # Distributed under terms of the MIT license.
 
 import os
-import cPickle as pickle
+import pickle
 import hashlib
 from mpl_toolkits.basemap import Basemap
 import time
@@ -278,34 +278,3 @@ if __name__ == "__main__":
     import matplotlib.pyplot as plt
 
     getShapefileColumn("examples/cb_2015_us_county_500k/cb_2015_us_county_500k.shp","GEOID")
-
-    '''
-    print("Starting test")
-    startTime = float(time.time())
-
-    fig = plt.figure()
-    ax = fig.add_subplot(1, 1, 1, axisbg='#ffffff', frame_on=False)
-
-    lats = (24.39, 49.38) #southern point, northern point
-    lons = (-124.85, -66.89) #western point, eastern point
-
-    m = BasemapWrapper(
-        verbose=True,
-        projection='merc',
-        llcrnrlat=lats[0],
-        urcrnrlat=lats[1],
-        llcrnrlon=lons[0],
-        urcrnrlon=lons[1],
-        resolution="i", # Increase the resolution here to see the benefit of cached Basemap objects
-        fix_aspect=True,
-        suppress_ticks=True
-    )
-
-    m.drawcoastlines()
-    m.drawlsmask()
-
-    plt.savefig("test.png",dpi=150,bbox_inches="tight")
-    plt.close()
-
-    print("Finished in %0.4f seconds" % (time.time()-startTime))
-    '''

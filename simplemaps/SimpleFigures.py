@@ -25,7 +25,7 @@ import numpy as np
 
 from pysal.esda.mapclassify import Equal_Interval, Fisher_Jenks, Maximum_Breaks, Natural_Breaks, Quantiles, Percentiles
 
-from BasemapUtils import BasemapWrapper, PolygonPatchesWrapper, getBounds, getShapefileColumn, DEFAULT_CACHE_LOCATION
+from .BasemapUtils import BasemapWrapper, PolygonPatchesWrapper, getBounds, getShapefileColumn, DEFAULT_CACHE_LOCATION
 
 def getUSMercatorBounds():
     lats = (24.39, 49.38) #southern point, northern point
