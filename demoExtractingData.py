@@ -17,7 +17,7 @@ from simplemaps.BasemapUtils import BasemapWrapper,PolygonPatchesWrapper,getShap
 
 CACHE_DIR = "tmpCache/"
 
-print 'Starting PolygonPatchesWrapper demo'
+print("Starting PolygonPatchesWrapper demo")
 startTime = float(time.time())
 
 fig = plt.figure()
@@ -66,8 +66,8 @@ p = matplotlib.collections.PatchCollection(patches, match_original=True)
 # Instead of plotting random numbers, we will plot the land area of each county.
 
 # What columns does our shapefile have?
-print "Column headers:"
-print getShapefileColumnHeaders(shapefileFn)
+print("Column headers:")
+print(getShapefileColumnHeaders(shapefileFn))
 
 # First we extract the land area data from the shapefile
 # This gives us a dictionary where "keys" are "GEOID"s and values are "ALAND"s
@@ -93,4 +93,4 @@ ax.add_collection(p)
 plt.savefig("examples/demoExtractingData.png",dpi=150,bbox_inches="tight")
 plt.close()
 
-print 'Finished in %0.4f seconds' % (time.time() - startTime)
+print("Finished in %0.4f seconds" % (time.time() - startTime))

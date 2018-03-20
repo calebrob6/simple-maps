@@ -635,14 +635,14 @@ if __name__ == "__main__":
 
     startTime = float(time.time())
     data = getShapefileColumn(shapefileFn, dataHeader="ALAND", primaryKeyHeader=shapefileKey)
-    print "Finished loading data in %0.4f seconds" % (time.time()-startTime)
+    print("Finished loading data in %0.4f seconds" % (time.time()-startTime))
 
     startTime = float(time.time())
     simpleMap(shapefileFn, shapefileKey, data, outputFn="test.png", title="Land Area of Counties in the US", logScale=False)
-    print "Finished drawing map in %0.4f seconds" % (time.time()-startTime)
+    print("Finished drawing map in %0.4f seconds" % (time.time()-startTime))
 
     startTime = float(time.time())
     categoryData = {k: np.random.randint(0,5) for k,v in data.items()}
     simpleBinnedMap(shapefileFn, shapefileKey, categoryData, labels=["1","2","3","4","5"], outputFn="testCategories.png")
-    print "Finished drawing map in %0.4f seconds" % (time.time()-startTime)
+    print("Finished drawing map in %0.4f seconds" % (time.time()-startTime))
     

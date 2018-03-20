@@ -13,7 +13,7 @@ from simplemaps.BasemapUtils import getShapefileColumn
 
 CACHE_DIR = "tmpCache/"
 
-print 'Starting SimpleFigures demo'
+print("Starting SimpleFigures demo")
 startTime = float(time.time())
 
 shapefileFn = "examples/cb_2015_us_county_500k_clipped/cb_2015_us_county_500k_clipped.shp"
@@ -21,7 +21,7 @@ shapefileKey = "GEOID"
 
 loadTime = float(time.time())
 data = getShapefileColumn(shapefileFn, dataHeader="ALAND", primaryKeyHeader=shapefileKey)
-print "Finished loading data in %0.4f seconds" % (time.time()-loadTime)
+print("Finished loading data in %0.4f seconds" % (time.time()-loadTime))
 
 #-----------------------------------------------------------------------------------
 # Normal Plot
@@ -71,4 +71,4 @@ simpleMap(
     cacheDir=CACHE_DIR
 )
 
-print 'Finished in %0.4f seconds' % (time.time() - startTime)
+print("Finished in %0.4f seconds" % (time.time() - startTime))

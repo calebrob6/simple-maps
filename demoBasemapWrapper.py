@@ -12,7 +12,7 @@ from simplemaps.BasemapUtils import BasemapWrapper,PolygonPatchesWrapper
 
 CACHE_DIR = "tmpCache/"
 
-print 'Starting BasemapWrapper demo'
+print("Starting BasemapWrapper demo")
 startTime = float(time.time())
 
 fig = plt.figure()
@@ -43,4 +43,4 @@ m.drawlsmask()
 plt.savefig("examples/demoBasemapWrapper.png",dpi=150,bbox_inches="tight")
 plt.close()
 
-print 'Finished in %0.4f seconds' % (time.time() - startTime)
+print("Finished in %0.4f seconds" % (time.time() - startTime))

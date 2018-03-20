@@ -280,7 +280,7 @@ if __name__ == "__main__":
     getShapefileColumn("examples/cb_2015_us_county_500k/cb_2015_us_county_500k.shp","GEOID")
 
     '''
-    print "Starting test"
+    print("Starting test")
     startTime = float(time.time())
 
     fig = plt.figure()
@@ -307,5 +307,5 @@ if __name__ == "__main__":
     plt.savefig("test.png",dpi=150,bbox_inches="tight")
     plt.close()
 
-    print "Finished in %0.4f seconds" % (time.time()-startTime)
+    print("Finished in %0.4f seconds" % (time.time()-startTime))
     '''

@@ -13,7 +13,7 @@ from simplemaps.BasemapUtils import getShapefileColumn
 
 CACHE_DIR = "tmpCache/"
 
-print 'Starting SimpleFigures demo'
+print("Starting SimpleFigures demo")
 startTime = float(time.time())
 
 shapefileFn = "examples/cb_2015_us_county_500k_clipped/cb_2015_us_county_500k_clipped.shp"
@@ -21,7 +21,7 @@ shapefileKey = "GEOID"
 
 loadTime = float(time.time())
 data = getShapefileColumn(shapefileFn, dataHeader="ALAND", primaryKeyHeader=shapefileKey)
-print "Finished loading data in %0.4f seconds" % (time.time()-loadTime)
+print("Finished loading data in %0.4f seconds" % (time.time()-loadTime))
 
 #-----------------------------------------------------------------------------------
 # Data Preprocessing
@@ -51,7 +51,7 @@ for key in data.keys():
     if key in pop2013 and key in pop2014:
         dataDifference[key] = pop2014[key] - pop2013[key]
     else:
-        print "Key: %s not found in ACS data" % (key)
+        print("Key: %s not found in ACS data" % (key))
         dataDifference[key] = 0 
 
 #-----------------------------------------------------------------------------------
@@ -68,4 +68,4 @@ differenceMap(
 )
 
 
-print 'Finished in %0.4f seconds' % (time.time() - startTime)
+print("Finished in %0.4f seconds" % (time.time() - startTime))

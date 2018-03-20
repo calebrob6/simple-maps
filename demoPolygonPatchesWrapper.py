@@ -17,7 +17,7 @@ from simplemaps.BasemapUtils import BasemapWrapper,PolygonPatchesWrapper
 
 CACHE_DIR = "tmpCache/"
 
-print 'Starting PolygonPatchesWrapper demo'
+print("Starting PolygonPatchesWrapper demo")
 startTime = float(time.time())
 
 fig = plt.figure()
@@ -61,8 +61,8 @@ patches, keys, bounds = PolygonPatchesWrapper(
 # for each shape, patches[i], we have the assosciated primary key value, keys[i]
 assert len(patches) == len(keys) # patches will be the same length as keys
 
-print "We loaded %d patches from %s" % (len(patches), shapefileFn)
-print "These patches represent %d different shapes" % (len(set(keys))) 
+print("We loaded %d patches from %s" % (len(patches), shapefileFn))
+print("These patches represent %d different shapes" % (len(set(keys))))
 
 for patch in patches:
     patch.set_linewidth(0.5)
@@ -84,4 +84,4 @@ ax.add_collection(p)
 plt.savefig("examples/demoPolygonPatchesWrapper.png",dpi=150,bbox_inches="tight")
 plt.close()
 
-print 'Finished in %0.4f seconds' % (time.time() - startTime)
+print("Finished in %0.4f seconds" % (time.time() - startTime))
