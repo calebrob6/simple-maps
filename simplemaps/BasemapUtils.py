@@ -81,7 +81,7 @@ def getBasemapWrapperHash(*args, **kwargs):
         if k not in KWARGS_IGNORE:
             newKwargs[k] = v
 
-    uniqueRepr = str(set(tuple(newKwargs.items())))
+    uniqueRepr = str(set(tuple(newKwargs.items()))).encode('utf-8')
     hashed = str(hashlib.sha224(uniqueRepr).hexdigest())
     return hashed
 
@@ -183,7 +183,7 @@ def PolygonPatchesWrapper(transformer, shapefileFn, shapefileKey, filterList=Non
         "filterList" : ','.join(map(str,filterList)) if filterList is not None else "None"
     }
 
-    uniqueRepr = str(set(tuple(hashedRepresentation.items())))
+    uniqueRepr = str(set(tuple(hashedRepresentation.items()))).encode('utf-8')
     hashedFn = str(hashlib.sha224(uniqueRepr).hexdigest()) + ".p"
     newFn = os.path.join(outputBase,hashedFn)
 
