@@ -253,7 +253,7 @@ def simpleBinnedMap(shapefileFn, shapefileKey, data, labels=None, cmap="Blues", 
 def simpleMap(
         shapefileFn, shapefileKey,
         data,
-        cmap="Blues", colorbarRange=(None,None), colorbarType=0, colorbarLabels=None, noDataColor="#FFFFFF",
+        cmap="Blues", colorbarRange=(None,None), colorbarType=0, colorbarLabels=None, noDataColor="#FFFFFF", dataToColorIdxMap=None,
         size=(20,10),
         logScale=False,
         bounds=None,
@@ -289,19 +289,34 @@ def simpleMap(
         lats = (bounds[0],bounds[1])
         lons = (bounds[2],bounds[3])
 
-    basemapArgs = {
-        "projection":"merc",
-        "llcrnrlat":lats[0],
-        "urcrnrlat":lats[1],
-        "llcrnrlon":lons[0],
-        "urcrnrlon":lons[1],
-        "resolution":"i",
-        "fix_aspect":True,
-        "suppress_ticks":True,
-        #-------------------------------
-        "cacheDir":cacheDir,
-        "verbose":verbose
-    }
+    if False:
+        basemapArgs = {
+            "projection":"merc",
+            "llcrnrlat":lats[0],
+            "urcrnrlat":lats[1],
+            "llcrnrlon":lons[0],
+            "urcrnrlon":lons[1],
+            "resolution":"i",
+            "fix_aspect":True,
+            "suppress_ticks":True,
+            #-------------------------------
+            "cacheDir":cacheDir,
+            "verbose":verbose
+        }
+    else:
+        basemapArgs = {
+            "projection":"lcc", "lat_1":32, "lat_2":45, "lon_0":-95,
+            "llcrnrlat":lats[0],
+            "urcrnrlat":lats[1],
+            "llcrnrlon":lons[0],
+            "urcrnrlon":lons[1],
+            "resolution":"i",
+            "fix_aspect":True,
+            "suppress_ticks":True,
+            #-------------------------------
+            "cacheDir":cacheDir,
+            "verbose":verbose
+        }
 
     m = BasemapWrapper(**basemapArgs)
 
@@ -357,10 +372,16 @@ def simpleMap(
         cbaxes = fig.add_axes([0.2, 0.03, 0.6, 0.05])
 
         #transform data into category format
-        uniqueDataValues = sorted(list(set(data.values())))
-        uniqueDataValuesMap = {val:i for i,val in enumerate(uniqueDataValues)}
-        numCategories = len(uniqueDataValues)
-        data = {k: uniqueDataValuesMap[v] for k,v in data.items()}
+        if dataToColorIdxMap is None:
+            uniqueDataValues = sorted(list(set(data.values())))
+            uniqueDataValuesMap = {val:i for i,val in enumerate(uniqueDataValues)}
+            numCategories = len(uniqueDataValues)
+            data = {k: uniqueDataValuesMap[v] for k,v in data.items()}
+        else:
+            uniqueDataValues = sorted(list(set(dataToColorIdxMap.values())))
+            uniqueDataValuesMap = {val:i for i,val in enumerate(uniqueDataValues)}
+            numCategories = len(uniqueDataValues)
+            data = {k: dataToColorIdxMap[v] for k,v in data.items()}
 
         if isinstance(cmap, str):
             raise ValueError("Must pass in an actual cmap object when using a discrete colormap (colorbarType==1)")
@@ -412,7 +433,7 @@ def simpleMap(
     fig.set_size_inches(size[0], size[1])
     
     if outputFn is not None:
-        plt.savefig(outputFn, dpi=150, alpha=True, bbox_inches='tight')
+        plt.savefig(outputFn, dpi=150, alpha=True, transparent=True, bbox_inches='tight')
     else:
         plt.show()
     
@@ -449,19 +470,34 @@ def differenceMap(
         lats = (bounds[0],bounds[1])
         lons = (bounds[2],bounds[3])
 
-    basemapArgs = {
-        "projection":"merc",
-        "llcrnrlat":lats[0],
-        "urcrnrlat":lats[1],
-        "llcrnrlon":lons[0],
-        "urcrnrlon":lons[1],
-        "resolution":"i",
-        "fix_aspect":True,
-        "suppress_ticks":True,
-        #-------------------------------
-        "cacheDir":cacheDir,
-        "verbose":verbose
-    }
+    if False:
+        basemapArgs = {
+            "projection":"merc",
+            "llcrnrlat":lats[0],
+            "urcrnrlat":lats[1],
+            "llcrnrlon":lons[0],
+            "urcrnrlon":lons[1],
+            "resolution":"i",
+            "fix_aspect":True,
+            "suppress_ticks":True,
+            #-------------------------------
+            "cacheDir":cacheDir,
+            "verbose":verbose
+        }
+    else:
+        basemapArgs = {
+            "projection":"lcc", "lat_1":32, "lat_2":45, "lon_0":-95,
+            "llcrnrlat":lats[0],
+            "urcrnrlat":lats[1],
+            "llcrnrlon":lons[0],
+            "urcrnrlon":lons[1],
+            "resolution":"i",
+            "fix_aspect":True,
+            "suppress_ticks":True,
+            #-------------------------------
+            "cacheDir":cacheDir,
+            "verbose":verbose
+        }
 
     m = BasemapWrapper(**basemapArgs)
 
