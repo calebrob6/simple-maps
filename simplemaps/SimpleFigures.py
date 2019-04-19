@@ -260,7 +260,9 @@ def simpleMap(
         title=None,
         outputFn=None,
         cacheDir=None,
-        verbose=False
+        verbose=False,
+        dpi=300,
+        figsize=(6,4)
     ):
     '''
 
@@ -279,7 +281,7 @@ def simpleMap(
     #--------------------------------------------------------------------------------------------------
     # Setup Figure
     #--------------------------------------------------------------------------------------------------
-    fig = plt.figure()
+    fig = plt.figure(figsize=figsize)
     ax = fig.add_subplot(1, 1, 1, facecolor='#ffffff', frame_on=False)
 
     lats, lons = None, None
@@ -433,7 +435,7 @@ def simpleMap(
     fig.set_size_inches(size[0], size[1])
     
     if outputFn is not None:
-        plt.savefig(outputFn, dpi=150, alpha=True, transparent=True, bbox_inches='tight')
+        plt.savefig(outputFn, dpi=dpi, alpha=True, transparent=True, bbox_inches='tight')
     else:
         plt.show()
     
