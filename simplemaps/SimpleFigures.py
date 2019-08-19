@@ -452,7 +452,9 @@ def differenceMap(
         title=None,
         outputFn=None,
         cacheDir=None,
-        verbose=False
+        verbose=False,
+        dpi=300,
+        figsize=(6,4)
     ):
 
     
@@ -462,7 +464,7 @@ def differenceMap(
     #--------------------------------------------------------------------------------------------------
     # Setup Figure
     #--------------------------------------------------------------------------------------------------
-    fig = plt.figure()
+    fig = plt.figure(figsize=figsize)
     ax = fig.add_subplot(1, 1, 1, facecolor='#ffffff', frame_on=False)
 
     lats, lons = None, None
@@ -660,7 +662,7 @@ def differenceMap(
     fig.set_size_inches(size[0],size[1])
     
     if outputFn is not None:
-        plt.savefig(outputFn, dpi=300, alpha=True, bbox_inches='tight')
+        plt.savefig(outputFn, dpi=dpi, alpha=True, bbox_inches='tight')
     else:
         plt.show()
     
