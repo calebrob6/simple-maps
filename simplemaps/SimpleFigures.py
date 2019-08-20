@@ -51,7 +51,7 @@ def showCmap(cmap):
     colorbar.set_ticks([0,1,2])
     colorbar.set_ticklabels(["Small","Medium","Large"])
     
-    colorbar.ax.tick_params(labelsize=18,labelcolor='k',direction='inout',width=3,length=6)
+    colorbar.ax.tick_params(labelsize=12,labelcolor='k',direction='inout',width=2,length=6)
 
     color = scalarMap.to_rgba(1)
 
@@ -153,7 +153,7 @@ def singleColorbar(cbaxes,dataMin,dataMax,cmap,logScale=False):
     
     colorbar.set_ticks(tTicks)
     colorbar.set_ticklabels(tTicklabels)
-    colorbar.ax.tick_params(labelsize=18,labelcolor='k',direction='inout',width=3,length=6)
+    colorbar.ax.tick_params(labelsize=12,labelcolor='k',direction='inout',width=2,length=6)
 
     return mappable
 
@@ -178,7 +178,7 @@ def discreteColorbar(cbaxes,numCategories,cmap,labels=None):
     colorbar.set_ticks(np.arange(0,numCategories) + 0.5)
     if labels is not None:
         colorbar.set_ticklabels(labels)
-    colorbar.ax.tick_params(labelsize=18,labelcolor='k',direction='inout',width=3,length=6)
+    colorbar.ax.tick_params(labelsize=12, labelcolor='k', direction='inout', width=2, length=6)
 
     return mappable
 
@@ -335,7 +335,7 @@ def simpleMap(
     )
 
     for patch in patches:
-        patch.set_linewidth(0.5)
+        patch.set_linewidth(0.1)
         patch.set_edgecolor("black")
 
     p = matplotlib.collections.PatchCollection(patches, match_original=True)
@@ -518,7 +518,7 @@ def differenceMap(
     )
 
     for patch in patches:
-        patch.set_linewidth(0.5)
+        patch.set_linewidth(0.1)
         patch.set_edgecolor("black")
 
     p = matplotlib.collections.PatchCollection(patches, match_original=True)
@@ -578,7 +578,7 @@ def differenceMap(
     #----------------------------
     # Draw right (positive) colorbar
     #----------------------------
-    gapVal = 0.02 # this determines how much space is between the two colorbars (in terms of percentage of width of the figure, 0.02 is a 2% gap)
+    gapVal = 0.03 # this determines how much space is between the two colorbars (in terms of percentage of width of the figure, 0.02 is a 2% gap)
     
     cbaxes = fig.add_axes([0.5+gapVal, 0.03, 0.3, 0.05], frameon=False)
     colorbar = matplotlib.colorbar.ColorbarBase(
@@ -592,7 +592,7 @@ def differenceMap(
 
     colorbar.set_ticks(pTicks)
     colorbar.set_ticklabels(pTicklabels)
-    colorbar.ax.tick_params(labelsize=28,labelcolor='k',direction='inout',width=3,length=6)
+    colorbar.ax.tick_params(labelsize=12,labelcolor='k',direction='inout',width=2,length=6)
 
     #----------------------------
     # Draw left (negative) colorbar
@@ -609,7 +609,7 @@ def differenceMap(
 
     colorbar.set_ticks(nTicks)
     colorbar.set_ticklabels(nTicklabels)
-    colorbar.ax.tick_params(labelsize=28,labelcolor='k',direction='inout',width=3,length=6)
+    colorbar.ax.tick_params(labelsize=12,labelcolor='k',direction='inout',width=2,length=6)
 
     #----------------------------
     # Use whichever mappable we loaded from above to color the patches
